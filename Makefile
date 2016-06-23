@@ -16,6 +16,9 @@ docs:
 pre-commit:
 	@tox -e pre-commit -- install -f --install-hooks
 
+lint: pre-commit
+	@tox -e pre-commit -- run --all-files
+
 release: docs
 	# Check for tag existence
 	# git describe release-$(VERSION) 2>&1 >/dev/null || exit 1
