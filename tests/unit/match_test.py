@@ -1,14 +1,9 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import os
-import sys
-
 import pytest
 
-sys.path.append(os.path.join(os.getcwd(), 'bin'))  # noqa
-from autojump_data import Entry
-from autojump_match import match_anywhere
-from autojump_match import match_consecutive
+from autojump.data import Entry
+from autojump.match import match_anywhere
+from autojump.match import match_consecutive
 
 
 class TestMatchAnywhere(object):

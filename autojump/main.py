@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
   Copyright © 2008-2012 Joel Schaerer
@@ -20,12 +19,36 @@
 """
 from __future__ import print_function
 
+import os
+import sys
 from itertools import chain
 from math import sqrt
 from operator import attrgetter
 from operator import itemgetter
-import os
-import sys
+
+from data import dictify
+from data import entriefy
+from data import Entry
+from data import load
+from data import save
+from lib.argparse import ArgumentParser
+from match import match_anywhere
+from match import match_consecutive
+from match import match_fuzzy
+from utils import first
+from utils import get_pwd
+from utils import get_tab_entry_info
+from utils import has_uppercase
+from utils import is_autojump_sourced
+from utils import is_osx
+from utils import is_windows
+from utils import last
+from utils import print_entry
+from utils import print_local
+from utils import print_tab_menu
+from utils import sanitize
+from utils import take
+from utils import unico
 
 if sys.version_info[0] == 3:
     ifilter = filter
@@ -34,36 +57,6 @@ if sys.version_info[0] == 3:
 else:
     from itertools import ifilter
     from itertools import imap
-
-# Vendorized argparse for Python 2.6 support
-from autojump_argparse import ArgumentParser
-
-# autojump is not a standard python package but rather installed as a mixed
-# shell + Python app with no outside dependencies (except Python). As a
-# consequence we use relative imports and depend on file prefixes to prevent
-# module conflicts.
-from autojump_data import dictify
-from autojump_data import entriefy
-from autojump_data import Entry
-from autojump_data import load
-from autojump_data import save
-from autojump_match import match_anywhere
-from autojump_match import match_consecutive
-from autojump_match import match_fuzzy
-from autojump_utils import first
-from autojump_utils import get_pwd
-from autojump_utils import get_tab_entry_info
-from autojump_utils import has_uppercase
-from autojump_utils import is_autojump_sourced
-from autojump_utils import is_osx
-from autojump_utils import is_windows
-from autojump_utils import last
-from autojump_utils import print_entry
-from autojump_utils import print_local
-from autojump_utils import print_tab_menu
-from autojump_utils import sanitize
-from autojump_utils import take
-from autojump_utils import unico
 
 VERSION = '22.3.3'
 FUZZY_MATCH_THRESHOLD = 0.6
@@ -101,7 +94,7 @@ def set_defaults():
 def parse_arguments():
     parser = ArgumentParser(
         description='Automatically jump to directory passed as an argument.',
-        epilog="Please see autojump(1) man pages for full documentation.")
+        epilog='Please see autojump(1) man pages for full documentation.')
     parser.add_argument(
         'directory', metavar='DIRECTORY', nargs='*', default='',
         help='directory to jump to')
@@ -117,16 +110,16 @@ def parse_arguments():
         const=15, default=False,
         help='decrease current directory weight')
     parser.add_argument(
-        '--complete', action="store_true", default=False,
+        '--complete', action='store_true', default=False,
         help='used for tab completion')
     parser.add_argument(
-        '--purge', action="store_true", default=False,
+        '--purge', action='store_true', default=False,
         help='remove non-existent paths from database')
     parser.add_argument(
-        '-s', '--stat', action="store_true", default=False,
+        '-s', '--stat', action='store_true', default=False,
         help='show database entries and their key weights')
     parser.add_argument(
-        '-v', '--version', action="version", version="%(prog)s v" +
+        '-v', '--version', action='version', version='%(prog)s v' +
         VERSION, help='show version information')
 
     return parser.parse_args()
@@ -167,7 +160,7 @@ def detect_smartcase(needles):
 def find_matches(entries, needles, check_entries=True):
     """Return an iterator to matching entries."""
     # TODO(wting|2014-02-24): replace assertion with unit test
-    assert isinstance(needles, list), "Needles must be a list."
+    assert isinstance(needles, list), 'Needles must be a list.'
     ignore_case = detect_smartcase(needles)
 
     try:
@@ -236,25 +229,25 @@ def print_stats(data, data_path):
     for path, weight in sorted(data.items(), key=itemgetter(1)):
         print_entry(Entry(path, weight))
 
-    print("________________________________________\n")
-    print("%d:\t total weight" % sum(data.values()))
-    print("%d:\t number of entries" % len(data))
+    print('________________________________________\n')
+    print('%d:\t total weight' % sum(data.values()))
+    print('%d:\t number of entries' % len(data))
 
     try:
         print_local(
-            "%.2f:\t current directory weight" % data.get(os.getcwdu(), 0))
+            '%.2f:\t current directory weight' % data.get(os.getcwdu(), 0))
     except OSError:
         # current directory no longer exists
         pass
 
-    print("\ndata:\t %s" % data_path)
+    print('\ndata:\t %s' % data_path)
 
 
 def main(args):  # noqa
     if not is_autojump_sourced() and not is_windows():
         print("Please source the correct autojump file in your shell's")
-        print("startup file. For more information, please reinstall autojump")
-        print("and read the post installation instructions.")
+        print('startup file. For more information, please reinstall autojump')
+        print('and read the post installation instructions.')
         return 1
 
     config = set_defaults()
@@ -278,7 +271,7 @@ def main(args):  # noqa
         old_data = load(config)
         new_data = dictify(purge_missing_paths(entriefy(old_data)))
         save(config, new_data)
-        print("Purged %d entries." % (len(old_data) - len(new_data)))
+        print('Purged %d entries.' % (len(old_data) - len(new_data)))
     elif args.stat:
         print_stats(load(config), config['data_path'])
     elif not args.directory:
@@ -316,5 +309,5 @@ def main(args):  # noqa
     return 0
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     sys.exit(main(parse_arguments()))

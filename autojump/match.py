@@ -1,11 +1,10 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import os
 import re
 from difflib import SequenceMatcher
 
-from autojump_utils import is_python3
-from autojump_utils import last
+from autojump.utils import is_python3
+from autojump.utils import last
 
 
 if is_python3():  # pragma: no cover

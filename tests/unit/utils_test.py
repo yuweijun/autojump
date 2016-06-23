@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import os
 import sys
@@ -6,20 +5,19 @@ import sys
 import mock
 import pytest
 
-sys.path.append(os.path.join(os.getcwd(), 'bin'))  # noqa
-import autojump_utils
-from autojump_utils import encode_local
-from autojump_utils import first
-from autojump_utils import get_tab_entry_info
-from autojump_utils import has_uppercase
-from autojump_utils import in_bash
-from autojump_utils import is_python3
-from autojump_utils import last
-from autojump_utils import sanitize
-from autojump_utils import second
-from autojump_utils import surround_quotes
-from autojump_utils import take
-from autojump_utils import unico
+from autojump import utils
+from autojump.utils import encode_local
+from autojump.utils import first
+from autojump.utils import get_tab_entry_info
+from autojump.utils import has_uppercase
+from autojump.utils import in_bash
+from autojump.utils import is_python3
+from autojump.utils import last
+from autojump.utils import sanitize
+from autojump.utils import second
+from autojump.utils import surround_quotes
+from autojump.utils import take
+from autojump.utils import unico
 
 
 if is_python3():
@@ -71,12 +69,12 @@ def test_has_uppercase():
     assert not has_uppercase('')
 
 
-@mock.patch.object(autojump_utils, 'in_bash', return_value=True)
+@mock.patch.object(utils, 'in_bash', return_value=True)
 def test_surround_quotes_in_bash(_):
     assert surround_quotes('foo') == '"foo"'
 
 
-@mock.patch.object(autojump_utils, 'in_bash', return_value=False)
+@mock.patch.object(utils, 'in_bash', return_value=False)
 def test_dont_surround_quotes_not_in_bash(_):
     assert surround_quotes('foo') == 'foo'
 

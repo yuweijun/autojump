@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from __future__ import print_function
 
@@ -10,11 +9,11 @@ from collections import namedtuple
 from tempfile import NamedTemporaryFile
 from time import time
 
-from autojump_utils import create_dir
-from autojump_utils import is_osx
-from autojump_utils import is_python3
-from autojump_utils import move_file
-from autojump_utils import unico
+from autojump.utils import create_dir
+from autojump.utils import is_osx
+from autojump.utils import is_python3
+from autojump.utils import move_file
+from autojump.utils import unico
 
 
 if sys.version_info[0] == 3:
