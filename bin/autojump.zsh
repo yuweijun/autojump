@@ -1,9 +1,6 @@
 export AUTOJUMP_SOURCED=1
 
 # set user installation paths
-if [[ -d ~/.autojump/bin ]]; then
-    path=(~/.autojump/bin ${path})
-fi
 if [[ -d ~/.autojump/functions ]]; then
     fpath=(~/.autojump/functions ${fpath})
 fi
@@ -43,6 +40,9 @@ chpwd_functions+=autojump_chpwd
 
 
 # default autojump command
+autojump() {
+    python ~/.autojump/src/main.py ${@}
+}
 j() {
     if [[ ${1} == -* ]] && [[ ${1} != "--" ]]; then
         autojump ${@}

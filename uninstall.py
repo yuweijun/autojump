@@ -7,8 +7,7 @@ import platform
 import shutil
 import sys
 
-sys.path.append('bin')
-from autojump_argparse import ArgumentParser  # noqa
+from autojump.lib.argparse import ArgumentParser
 
 
 def is_empty_dir(path):

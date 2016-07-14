@@ -1,9 +1,15 @@
-.cache
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+
+# Distribution / packaging
+.Python
+build/
+dist/
+sdist/
+*.egg-info/
+
+# Unit test / coverage reports
+.tox/
 .coverage
-*.pyc
-__pycache__
-*~
-*.tar.gz
-*.patch
-.tox
-tags
+.coverage.*

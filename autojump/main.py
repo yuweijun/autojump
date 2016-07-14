@@ -26,29 +26,30 @@ from math import sqrt
 from operator import attrgetter
 from operator import itemgetter
 
-from data import dictify
-from data import entriefy
-from data import Entry
-from data import load
-from data import save
+from autojump import version
+from autojump.data import dictify
+from autojump.data import entriefy
+from autojump.data import Entry
+from autojump.data import load
+from autojump.data import save
 from lib.argparse import ArgumentParser
-from match import match_anywhere
-from match import match_consecutive
-from match import match_fuzzy
-from utils import first
-from utils import get_pwd
-from utils import get_tab_entry_info
-from utils import has_uppercase
-from utils import is_autojump_sourced
-from utils import is_osx
-from utils import is_windows
-from utils import last
-from utils import print_entry
-from utils import print_local
-from utils import print_tab_menu
-from utils import sanitize
-from utils import take
-from utils import unico
+from autojump.match import match_anywhere
+from autojump.match import match_consecutive
+from autojump.match import match_fuzzy
+from autojump.utils import first
+from autojump.utils import get_pwd
+from autojump.utils import get_tab_entry_info
+from autojump.utils import has_uppercase
+from autojump.utils import is_autojump_sourced
+from autojump.utils import is_osx
+from autojump.utils import is_windows
+from autojump.utils import last
+from autojump.utils import print_entry
+from autojump.utils import print_local
+from autojump.utils import print_tab_menu
+from autojump.utils import sanitize
+from autojump.utils import take
+from autojump.utils import unico
 
 if sys.version_info[0] == 3:
     ifilter = filter
@@ -58,7 +59,7 @@ else:
     from itertools import ifilter
     from itertools import imap
 
-VERSION = '22.3.3'
+
 FUZZY_MATCH_THRESHOLD = 0.6
 TAB_ENTRIES_COUNT = 9
 TAB_SEPARATOR = '__'
@@ -120,7 +121,7 @@ def parse_arguments():
         help='show database entries and their key weights')
     parser.add_argument(
         '-v', '--version', action='version', version='%(prog)s v' +
-        VERSION, help='show version information')
+        str(version), help='show version information')
 
     return parser.parse_args()
 
@@ -244,11 +245,11 @@ def print_stats(data, data_path):
 
 
 def main(args):  # noqa
-    if not is_autojump_sourced() and not is_windows():
-        print("Please source the correct autojump file in your shell's")
-        print('startup file. For more information, please reinstall autojump')
-        print('and read the post installation instructions.')
-        return 1
+    # if not is_autojump_sourced() and not is_windows():
+        # print("Please source the correct autojump file in your shell's")
+        # print('startup file. For more information, please reinstall autojump')
+        # print('and read the post installation instructions.')
+        # return 1
 
     config = set_defaults()
 

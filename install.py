@@ -7,16 +7,28 @@ import platform
 import shutil
 import sys
 
-sys.path.append('bin')
-from autojump_argparse import ArgumentParser  # noqa
+from autojump.lib.argparse import ArgumentParser
 
-SUPPORTED_SHELLS = ('bash', 'zsh', 'fish', 'tcsh')
+SUPPORTED_SHELLS = frozenset(['bash', 'zsh', 'fish', 'tcsh'])
 
 
 def cp(src, dest, dryrun=False):
     print('copying file: %s -> %s' % (src, dest))
-    if not dryrun:
-        shutil.copy(src, dest)
+    if dryrun:
+        return
+
+    shutil.copy(src, dest)
+
+
+def cpdir(src, dest, dryrun=False):
+    print('copying directory: %s -> %s' % (src, dest))
+    if dryrun:
+        return
+
+    if os.path.exists(dest):
+        shutil.rmtree(dest)
+
+    shutil.copytree(src, dest)
 
 
 def get_shell():
@@ -25,12 +37,18 @@ def get_shell():
 
 def mkdir(path, dryrun=False):
     print('creating directory:', path)
-    if not dryrun and not os.path.exists(path):
-        os.makedirs(path)
+    if dryrun or os.path.exists(path):
+        return
+
+    os.makedirs(path)
 
 
 def modify_autojump_sh(etc_dir, share_dir, dryrun=False):
     """Append custom installation path to autojump.sh"""
+    print('modifying autojump.sh for custom install')
+    if dryrun:
+        return
+
     custom_install = '\
         \n# check custom install \
         \nif [ -s %s/autojump.${shell} ]; then \
@@ -43,6 +61,10 @@ def modify_autojump_sh(etc_dir, share_dir, dryrun=False):
 
 def modify_autojump_lua(clink_dir, bin_dir, dryrun=False):
     """Prepend custom AUTOJUMP_BIN_DIR definition to autojump.lua"""
+    print('modifying autojump.lua for custom install')
+    if dryrun:
+        return
+
     custom_install = "local AUTOJUMP_BIN_DIR = \"%s\"\n" % bin_dir.replace(
         '\\',
         '\\\\')
@@ -163,29 +185,27 @@ def show_post_installation_message(etc_dir, share_dir, bin_dir):
 
 def main(args):
     if args.dryrun:
-        print('Installing autojump to %s (DRYRUN)...' % args.destdir)
+        print('[DRYRUN] Installing to %s ...' % args.destdir)
     else:
-        print('Installing autojump to %s ...' % args.destdir)
+        print('Installing to %s ...' % args.destdir)
 
+    src_dir = os.path.join(args.destdir, args.prefix, 'src')
     bin_dir = os.path.join(args.destdir, args.prefix, 'bin')
     etc_dir = os.path.join(args.destdir, 'etc', 'profile.d')
     doc_dir = os.path.join(args.destdir, args.prefix, 'share', 'man', 'man1')
     share_dir = os.path.join(args.destdir, args.prefix, 'share', 'autojump')
     zshshare_dir = os.path.join(args.destdir, args.zshshare)
 
-    mkdir(bin_dir, args.dryrun)
     mkdir(doc_dir, args.dryrun)
     mkdir(etc_dir, args.dryrun)
     mkdir(share_dir, args.dryrun)
 
-    cp('./bin/autojump', bin_dir, args.dryrun)
-    cp('./bin/autojump_argparse.py', bin_dir, args.dryrun)
-    cp('./bin/autojump_data.py', bin_dir, args.dryrun)
-    cp('./bin/autojump_utils.py', bin_dir, args.dryrun)
+    cpdir('./autojump', src_dir, args.dryrun)
     cp('./bin/icon.png', share_dir, args.dryrun)
     cp('./docs/autojump.1', doc_dir, args.dryrun)
 
     if platform.system() == 'Windows':
+        mkdir(bin_dir, args.dryrun)
         cp('./bin/autojump.lua', args.clinkdir, args.dryrun)
         cp('./bin/autojump.bat', bin_dir, args.dryrun)
         cp('./bin/j.bat', bin_dir, args.dryrun)

@@ -53,4 +53,4 @@ test-fast: pre-commit
 clean:
 	@find . -type f -iname '*.py[co]' -delete
 	@find . -type d -iname '__pycache__' -delete
-	@rm -fr .tox
+	@rm -fr .tox autojump.egg-info build dist
